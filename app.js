@@ -5,7 +5,7 @@ const { logRequest, validateNewContact } = require('./middleware');
 const logger = require('./logger');
 
 const app = express();
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 // If in testing environment, use testContacts
 const CONTACTS_FILE_PATH =
   process.env.NODE_ENV.trim() === 'test'
