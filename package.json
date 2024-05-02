@@ -2,10 +2,10 @@
   "name": "take-home-assignment",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "test": "set NODE_ENV=test && jest",
-    "start": "set NODE_ENV=prod && nodemon app.js"
+    "start": "set NODE_ENV=prod && npm install -g nodemon && nodemon app.js"
   },
   "repository": {
     "type": "git",
