@@ -3,9 +3,10 @@
 
 Github actions was used to deploy to Azure App Services for continuous deployment.
 Sample endpoints:
-- Retrieving single object: /contact/1
-- Adding a single object: /contact/
-- Deleting an object: /contact/email/alice@example.com
+- Retrieve all contacts: /contact/
+- Retrieving single contact: /contact/1
+- Adding a single contact: /contact/
+- Deleting an contact: /contact/email/alice@example.com
 
 Things to note:
 - Contacts have a unique email and unique phone number. There can only be a single contact with a specific email or a specific phone number. Else, the request fails
