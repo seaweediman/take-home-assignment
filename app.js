@@ -11,7 +11,9 @@ const nodeEnv = process.env.NODE_ENV
   : 'development';
 // If in testing environment, use testContacts
 const CONTACTS_FILE_PATH =
-  nodeEnv === 'test' ? 'testContacts.json' : 'contacts.json';
+  nodeEnv === 'test'
+    ? 'json_files/testContacts.json'
+    : 'json_files/contacts.json';
 
 // Middleware
 app.use(bodyParser.json());

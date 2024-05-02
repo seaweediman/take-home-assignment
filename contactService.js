@@ -4,8 +4,8 @@ const fs = require('fs');
 class ContactService {
   constructor(filePath) {
     this.filePath = filePath;
-    this.data = this.loadData();
     this.isTesting = this.setIsTesting();
+    this.data = this.loadData();
   }
 
   setIsTesting() {
@@ -13,7 +13,7 @@ class ContactService {
       ? process.env.NODE_ENV.trim()
       : 'development';
 
-    this.isTesting = nodeEnv === 'test';
+    return nodeEnv === 'test';
   }
 
   loadData() {
