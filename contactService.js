@@ -13,7 +13,7 @@ class ContactService {
       ? process.env.NODE_ENV.trim()
       : 'development';
 
-    this.isTesting = nodeEnv == 'test';
+    this.isTesting = nodeEnv === 'test';
   }
 
   loadData() {
