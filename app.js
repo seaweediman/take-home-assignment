@@ -17,7 +17,6 @@ const CONTACTS_FILE_PATH =
 // Middleware
 app.use(bodyParser.json());
 app.use(logRequest);
-app.use(logError);
 
 // Initialize ContactService
 const contactService = new ContactService(CONTACTS_FILE_PATH);
@@ -95,6 +94,8 @@ app.delete('/contact/phone/:phone', (req, res) => {
     .status(200)
     .json({ message: `Contact with phone number ${phone} has been deleted` });
 });
+
+app.use(logError);
 
 // Start server
 const server = app.listen(PORT, () => {
