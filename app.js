@@ -22,9 +22,19 @@ const contactService = new ContactService(CONTACTS_FILE_PATH);
 
 // Routes
 // Get object
-
 app.get('/', (req, res) => {
-  res.send('Hello, world!');
+  res.send('Please enter a valid endpoint as per the README.');
+});
+
+app.get('/contact/', (req, res) => {
+  // Search and return object. Else, return error 404
+  const contacts = contactService.getAllContacts();
+  if (contacts) {
+    res.json(contacts);
+  } else {
+    logger.error(`No contacts found.`);
+    res.status(404).json({ error: 'No contacts found.' });
+  }
 });
 
 app.get('/contact/:id', (req, res) => {
@@ -44,12 +54,10 @@ app.get('/contact/:id', (req, res) => {
 // Add new object
 app.post(
   '/contact',
-  validateNewContact(contactService.getData()),
+  validateNewContact(contactService.getAllContacts()),
   (req, res) => {
     const newContact = req.body;
     contactService.addContact(newContact);
-
-    // Send success response with new contact
     res.status(200).json({ message: 'Contact succesfully added' });
   }
 );

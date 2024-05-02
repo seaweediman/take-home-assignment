@@ -36,7 +36,7 @@ class ContactService {
     }
   }
 
-  getData() {
+  getAllContacts() {
     return this.data;
   }
 
