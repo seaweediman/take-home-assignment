@@ -8,7 +8,6 @@ function logRequest(req, res, next) {
 
 function logError(err, req, res, next) {
   logging.error(`Error: ${err.message}`);
-  // Other error handling logic
   res.status(err.status || 500).json({ error: err.message });
 }
 
