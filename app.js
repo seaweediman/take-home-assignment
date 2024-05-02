@@ -2,6 +2,10 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const fs = require('fs');
 const { logRequest, validateNewContact } = require('./middleware');
+const logger = require('./logger');
+
+// Flag to indicate whether testing mode is enabled. Automatically set in package.json
+let isTesting = process.env.NODE_ENV.trim() === 'test';
 
 const app = express();
 const PORT = 3001;
@@ -17,7 +21,7 @@ app.use(logRequest);
 const data = JSON.parse(fs.readFileSync('sample.json'));
 
 // Start server
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
 
@@ -31,26 +35,28 @@ app.get('/contact/:id', (req, res) => {
   if (object) {
     res.json(object);
   } else {
-    res.status(404).json({ error: 'Object not found' });
+    logger.error(`Contact with id ${id} not found`);
+    res.status(404).json({ error: 'Contact not found' });
   }
 });
 
 // Add new object
 app.post('/contact', validateNewContact(data), (req, res) => {
-  const newContact = req.body;
+  if (!isTesting) {
+    const newContact = req.body;
 
-  console.log(req.body);
-  // Generate id for new object to be +1 of length, to maintain consistency
-  newContact.id = data.length + 1;
+    // Generate id for new object to be +1 of length, to maintain consistency
+    newContact.id = data.length + 1;
 
-  // Add new contact to the parsed array
-  data.push(newContact);
+    // Add new contact to the parsed array
+    data.push(newContact);
 
-  // Write updated data back to the JSON file
-  fs.writeFileSync('sample.json', JSON.stringify(data, null, 2));
+    // Write updated data back to the JSON file
+    fs.writeFileSync('sample.json', JSON.stringify(data, null, 2));
+  }
 
   // Send success response with new contact
-  res.status(200).json(newContact);
+  res.status(200).json({ message: 'Contact succesfully added' });
 });
 
 // Delete object by id
@@ -63,33 +69,33 @@ app.delete('/contact/id/:id', (req, res) => {
 
   // If object not found, just return
   if (index === -1) {
-    return res.status(404).json({ error: 'Object not found' });
+    logger.error(`Contact with id ${id} not found`);
+    return res.status(404).json({ error: 'Contact not found' });
   }
 
   deleteContact(index);
 
   // Send success response with success message
-  res.status(200).json({ message: `Object with id ${id} has been deleted` });
+  res.status(200).json({ message: `Contact with id ${id} has been deleted` });
 });
 
 // Delete object by email
 app.delete('/contact/email/:email', (req, res) => {
   const email = req.params.email;
-
   // Find object
   const index = data.findIndex((obj) => obj.email == email);
 
   // If object not found, just return
   if (index === -1) {
-    return res.status(404).json({ error: 'Object not found' });
+    logger.error(`Contact with email ${email} not found`);
+    return res.status(404).json({ error: 'Contact not found' });
   }
-
   deleteContact(index);
 
   // Send success response with success message
   res
     .status(200)
-    .json({ message: `Object with email ${email} has been deleted` });
+    .json({ message: `Contact with email ${email} has been deleted` });
 });
 
 // Delete object by phone
@@ -101,7 +107,8 @@ app.delete('/contact/phone/:phone', (req, res) => {
 
   // If object not found, just return
   if (index === -1) {
-    return res.status(404).json({ error: 'Object not found' });
+    logger.error(`Contact with phone ${phone} not found`);
+    return res.status(404).json({ error: 'Contact not found' });
   }
 
   deleteContact(index);
@@ -109,13 +116,17 @@ app.delete('/contact/phone/:phone', (req, res) => {
   // Send success response with success message
   res
     .status(200)
-    .json({ message: `Object with phone number ${phone} has been deleted` });
+    .json({ message: `Contact with phone number ${phone} has been deleted` });
 });
 
 function deleteContact(index) {
-  // Delete from array
-  data.splice(index, 1);
+  if (!isTesting) {
+    // Delete from array
+    data.splice(index, 1);
 
-  // Write updated data back to the JSON file
-  fs.writeFileSync('sample.json', JSON.stringify(data, null, 2));
+    // Write updated data back to the JSON file
+    fs.writeFileSync('sample.json', JSON.stringify(data, null, 2));
+  }
 }
+
+module.exports = { app, server };

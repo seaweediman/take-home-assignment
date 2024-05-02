@@ -2,7 +2,7 @@ const logger = require('./logger');
 
 // For logging requests
 function logRequest(req, res, next) {
-  logger.info(`${req.method} ${req.url}`);
+  logger.http(`${req.method} ${req.url}`);
   next();
 }
 
