@@ -168,7 +168,7 @@ describe('DELETE /contact/phone/:phone', () => {
     expect(response.status).toBe(200);
     expect(response.body).toEqual(
       expect.objectContaining({
-        message: 'Contact with phone number 987-654-3210 has been deleted',
+        message: 'Contact with phone 987-654-3210 has been deleted',
       })
     );
   });
