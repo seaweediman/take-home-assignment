@@ -21,6 +21,11 @@ const contactService = new ContactService(CONTACTS_FILE_PATH);
 
 // Routes
 // Get object
+
+app.get('/', (req, res) => {
+  res.send('Hello, world!');
+});
+
 app.get('/contact/:id', (req, res) => {
   // Parse id
   const id = parseInt(req.params.id);
