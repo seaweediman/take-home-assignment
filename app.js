@@ -6,11 +6,12 @@ const logger = require('./logger');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+const nodeEnv = process.env.NODE_ENV
+  ? process.env.NODE_ENV.trim()
+  : 'development';
 // If in testing environment, use testContacts
 const CONTACTS_FILE_PATH =
-  process.env.NODE_ENV.trim() === 'test'
-    ? 'testContacts.json'
-    : 'contacts.json';
+  nodeEnv === 'test' ? 'testContacts.json' : 'contacts.json';
 
 // Middleware
 app.use(bodyParser.json());

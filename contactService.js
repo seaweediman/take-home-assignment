@@ -5,7 +5,15 @@ class ContactService {
   constructor(filePath) {
     this.filePath = filePath;
     this.data = this.loadData();
-    this.isTesting = process.env.NODE_ENV.trim() === 'test';
+    this.isTesting = this.setIsTesting();
+  }
+
+  setIsTesting() {
+    const nodeEnv = process.env.NODE_ENV
+      ? process.env.NODE_ENV.trim()
+      : 'development';
+
+    this.isTesting = nodeEnv == 'test';
   }
 
   loadData() {
