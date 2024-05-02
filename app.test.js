@@ -2,6 +2,47 @@ const { app, server } = require('./app');
 const request = require('supertest');
 
 describe('GET /contact/:id', () => {
+  test('should return status 200 and the all contacts', async () => {
+    const response = await request(app).get('/contact/1');
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual(
+      expect.objectContaining(
+        {
+          id: 1,
+          name: 'John Doe',
+          email: 'john@example.com',
+          phone: '123-456-7890',
+        },
+        {
+          id: 2,
+          name: 'Jane Smith',
+          email: 'jane@example.com',
+          phone: '987-654-3210',
+        },
+        {
+          id: 3,
+          name: 'Alice Johnson',
+          email: 'alice@example.com',
+          phone: '555-555-5555',
+        },
+        {
+          id: 4,
+          name: 'Bob Brown',
+          email: 'bob@example.com',
+          phone: '111-222-3333',
+        },
+        {
+          name: 'Testing',
+          email: 'testing@example.com',
+          phone: '99999-9999-999',
+          id: 5,
+        }
+      )
+    );
+  });
+});
+
+describe('GET /contact/:id', () => {
   test('should return status 200 and the contact object if it exists', async () => {
     const response = await request(app).get('/contact/1');
     expect(response.status).toBe(200);
@@ -168,7 +209,7 @@ describe('DELETE /contact/phone/:phone', () => {
     expect(response.status).toBe(200);
     expect(response.body).toEqual(
       expect.objectContaining({
-        message: 'Contact with phone 987-654-3210 has been deleted',
+        message: 'Contact with phone number 987-654-3210 has been deleted',
       })
     );
   });

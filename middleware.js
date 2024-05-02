@@ -6,6 +6,12 @@ function logRequest(req, res, next) {
   next();
 }
 
+function logError(err, req, res, next) {
+  logging.error(`Error: ${err.message}`);
+  // Other error handling logic
+  res.status(err.status || 500).json({ error: err.message });
+}
+
 function validateNewContact(data) {
   return function (req, res, next) {
     const newContact = req.body;
@@ -60,4 +66,4 @@ function validateNewContact(data) {
   };
 }
 
-module.exports = { logRequest, validateNewContact };
+module.exports = { logRequest, logError, validateNewContact };

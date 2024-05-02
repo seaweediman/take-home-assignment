@@ -1,5 +1,4 @@
 const fs = require('fs');
-// Flag to indicate whether testing mode is enabled. Automatically set in package.json
 
 class ContactService {
   constructor(filePath) {

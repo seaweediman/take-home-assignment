@@ -1,8 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const ContactService = require('./contactService');
-const { logRequest, validateNewContact } = require('./middleware');
-const logger = require('./logger');
+const { logRequest, logError, validateNewContact } = require('./middleware');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -18,6 +17,7 @@ const CONTACTS_FILE_PATH =
 // Middleware
 app.use(bodyParser.json());
 app.use(logRequest);
+app.use(logError);
 
 // Initialize ContactService
 const contactService = new ContactService(CONTACTS_FILE_PATH);
@@ -34,7 +34,6 @@ app.get('/contact/', (req, res) => {
   if (contacts) {
     res.json(contacts);
   } else {
-    logger.error(`No contacts found.`);
     res.status(404).json({ error: 'No contacts found.' });
   }
 });
@@ -48,7 +47,6 @@ app.get('/contact/:id', (req, res) => {
   if (contact) {
     res.json(contact);
   } else {
-    logger.error(`Contact with id ${id} not found`);
     res.status(404).json({ error: 'Contact not found' });
   }
 });
@@ -64,37 +62,38 @@ app.post(
   }
 );
 
-// Delete object by id, email, or phone
-// To delete by:
-//    id: /contact/id/5
-//    email: /contact/email/alice@example.com
-//    phone: /contact/phone/987-654-3210
-app.delete('/contact/:key/:value', (req, res) => {
-  const { key, value } = req.params;
-  let deletedContact;
-
-  switch (key) {
-    case 'id':
-      deletedContact = contactService.deleteById(parseInt(value));
-      break;
-    case 'email':
-      deletedContact = contactService.deleteByEmail(value);
-      break;
-    case 'phone':
-      deletedContact = contactService.deleteByPhone(value);
-      break;
-    default:
-      return res.status(400).json({ error: 'Invalid key' });
-  }
+app.delete('/contact/id/:id', (req, res) => {
+  const id = req.params.id;
+  let deletedContact = contactService.deleteById(parseInt(id));
 
   if (!deletedContact) {
-    logger.error(`Contact with ${key} ${value} not found`);
     return res.status(404).json({ error: 'Contact not found' });
   }
+  res.status(200).json({ message: `Contact with id ${id} has been deleted` });
+});
 
+app.delete('/contact/email/:email', (req, res) => {
+  const email = req.params.email;
+  let deletedContact = contactService.deleteByEmail(email);
+
+  if (!deletedContact) {
+    return res.status(404).json({ error: 'Contact not found' });
+  }
   res
     .status(200)
-    .json({ message: `Contact with ${key} ${value} has been deleted` });
+    .json({ message: `Contact with email ${email} has been deleted` });
+});
+
+app.delete('/contact/phone/:phone', (req, res) => {
+  const phone = req.params.phone;
+  let deletedContact = contactService.deleteByPhone(phone);
+
+  if (!deletedContact) {
+    return res.status(404).json({ error: 'Contact not found' });
+  }
+  res
+    .status(200)
+    .json({ message: `Contact with phone number ${phone} has been deleted` });
 });
 
 // Start server
