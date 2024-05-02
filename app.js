@@ -31,7 +31,7 @@ app.get('/contact/:id', (req, res) => {
 });
 
 // Add new object
-app.post('/contact/:id', (req, res) => {
+app.post('/contact', (req, res) => {
     const newContact = req.body;
 
     console.log(req.body);
@@ -46,4 +46,26 @@ app.post('/contact/:id', (req, res) => {
 
     // Send success response with new contact
     res.status(200).json(newContact);
+});
+
+app.delete('/contact/:id', (req, res) => {
+    // Parse id
+    const id = parseInt(req.params.id);
+
+    // Find object
+    const index = data.findIndex(obj => obj.id == id);
+
+    // If object not found, just return
+    if (index === -1) {
+        return res.status(404).json({ error: 'Object not found' });
+    }
+
+    // Delete from array
+    data.splice(index, 1);
+    
+    // Write updated data back to the JSON file
+    fs.writeFileSync('sample.json', JSON.stringify(data, null, 2));
+
+    // Send success response with success message
+    res.status(200).json({ message: `Object with id ${id} has been deleted`});
 });
