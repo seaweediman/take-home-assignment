@@ -28,11 +28,5 @@
     "email": "testing@example.com",
     "phone": "99999-9999-999",
     "id": 5
-  },
-  {
-    "name": "Testing",
-    "email": "testing@example.com",
-    "phone": "99999-9999-999",
-    "id": 6
   }
 ]

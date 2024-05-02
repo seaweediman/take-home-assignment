@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const fs = require('fs');
-const logger = require('./logger');
+const { logRequest, validateNewContact } = require('./middleware');
 
 const app = express();
 const PORT = 3001;
@@ -11,10 +11,7 @@ const PORT = 3001;
 app.use(bodyParser.json());
 
 // For logging requests
-app.use((req, res, next) => {
-  logger.info(`${req.method} ${req.url}`);
-  next();
-});
+app.use(logRequest);
 
 // Read sample data from JSON file
 const data = JSON.parse(fs.readFileSync('sample.json'));
@@ -39,7 +36,7 @@ app.get('/contact/:id', (req, res) => {
 });
 
 // Add new object
-app.post('/contact', (req, res) => {
+app.post('/contact', validateNewContact(data), (req, res) => {
   const newContact = req.body;
 
   console.log(req.body);
@@ -56,7 +53,8 @@ app.post('/contact', (req, res) => {
   res.status(200).json(newContact);
 });
 
-app.delete('/contact/:id', (req, res) => {
+// Delete object by id
+app.delete('/contact/id/:id', (req, res) => {
   // Parse id
   const id = parseInt(req.params.id);
 
@@ -68,12 +66,56 @@ app.delete('/contact/:id', (req, res) => {
     return res.status(404).json({ error: 'Object not found' });
   }
 
+  deleteContact(index);
+
+  // Send success response with success message
+  res.status(200).json({ message: `Object with id ${id} has been deleted` });
+});
+
+// Delete object by email
+app.delete('/contact/email/:email', (req, res) => {
+  const email = req.params.email;
+
+  // Find object
+  const index = data.findIndex((obj) => obj.email == email);
+
+  // If object not found, just return
+  if (index === -1) {
+    return res.status(404).json({ error: 'Object not found' });
+  }
+
+  deleteContact(index);
+
+  // Send success response with success message
+  res
+    .status(200)
+    .json({ message: `Object with email ${email} has been deleted` });
+});
+
+// Delete object by phone
+app.delete('/contact/phone/:phone', (req, res) => {
+  const phone = req.params.phone;
+
+  // Find object
+  const index = data.findIndex((obj) => obj.phone == phone);
+
+  // If object not found, just return
+  if (index === -1) {
+    return res.status(404).json({ error: 'Object not found' });
+  }
+
+  deleteContact(index);
+
+  // Send success response with success message
+  res
+    .status(200)
+    .json({ message: `Object with phone number ${phone} has been deleted` });
+});
+
+function deleteContact(index) {
   // Delete from array
   data.splice(index, 1);
 
   // Write updated data back to the JSON file
   fs.writeFileSync('sample.json', JSON.stringify(data, null, 2));
-
-  // Send success response with success message
-  res.status(200).json({ message: `Object with id ${id} has been deleted` });
-});
+}
