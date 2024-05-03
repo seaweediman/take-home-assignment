@@ -1,10 +1,9 @@
 # Take Home Assignment by Mohamed Noriman
 
-# Deployed on https://iman-take-home.azurewebsites.net/
-
+## Deployed on https://iman-take-home.azurewebsites.net/
 Github actions was used to deploy to Azure App Services for continuous deployment.
 
-<ins>Sample endpoints:</ins>
+### Sample endpoints:
 
 - Retrieve all contacts: /contact/
 - Retrieving single contact: /contact/36222
@@ -13,7 +12,7 @@ Github actions was used to deploy to Azure App Services for continuous deploymen
 
 For add and delete endpoints, Postman can be used to send requests.
 
-<ins>Sample Add request:</ins>
+### Sample Add request:
 
 ```
 POST https://iman-take-home.azurewebsites.net/contact
@@ -24,7 +23,7 @@ POST https://iman-take-home.azurewebsites.net/contact
 }
 ```
 
-<ins>Sample Delete requests:</ins>
+### Sample Delete requests:
 
 ```
 DELETE https://iman-take-home.azurewebsites.net/contact/id/1525
@@ -32,7 +31,7 @@ DELETE https://iman-take-home.azurewebsites.net/contact/email/alice@example.com
 DELETE https://iman-take-home.azurewebsites.net/contact/phone/111-222-3333
 ```
 
-<ins>Things to note:</ins>
+### <ins>Things to note:</ins>
 
 - Contacts have a unique email and unique phone number. There can only be a single contact with a specific email or a specific phone number. Else, the request fails
 - When new contacts are added, a unique id is generated for that contact
